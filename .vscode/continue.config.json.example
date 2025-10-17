@@ -1,0 +1,33 @@
+{
+  "models": [
+    {
+      "title": "GPT-4",
+      "provider": "openai",
+      "model": "gpt-4"
+    },
+    {
+      "title": "GPT-3.5 Turbo",
+      "provider": "openai",
+      "model": "gpt-3.5-turbo"
+    }
+  ],
+  "mcpServers": {
+    "qdrant_rag": {
+      "command": "python",
+      "args": [
+        "mcp/qdrant_rag_server/server.py"
+      ],
+      "env": {
+        "QDRANT_URL": "http://localhost:6333",
+        "QDRANT_COLLECTION": "project_docs",
+        "EMBEDDINGS_PROVIDER": "fastembed",
+        "MODEL_NAME": "BAAI/bge-small-en-v1.5"
+      }
+    }
+  },
+  "tabAutocompleteModel": {
+    "title": "Autocomplete",
+    "provider": "openai",
+    "model": "gpt-3.5-turbo"
+  }
+}

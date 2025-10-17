@@ -1,0 +1,202 @@
+# Exemplo de configuração completa para um projeto API Python
+# Este arquivo serve como exemplo de como preencher o mcp-questions.yaml
+# com todas as configurações necessárias para um projeto real.
+
+# === INFORMAÇÕES BÁSICAS DO PROJETO ===
+project_name: "user-management-api"
+project_type: "api"
+language: "python"
+framework: "fastapi"
+description: "API REST para gerenciamento de usuários com autenticação JWT, perfis de usuário e sistema de permissões"
+
+# === CONFIGURAÇÕES ESPECÍFICAS DA LINGUAGEM ===
+python_version: "3.11"
+package_manager: "pip" # Ex: pip, poetry, pipenv
+virtual_env: "venv" # Ex: venv, virtualenv, conda, poetry
+dependencies:
+  - "fastapi>=0.104.0"
+  - "uvicorn[standard]>=0.24.0"
+  - "sqlalchemy>=2.0.0"
+  - "alembic>=1.12.0"
+  - "pydantic>=2.5.0"
+  - "python-jose[cryptography]>=3.3.0"
+  - "passlib[bcrypt]>=1.7.4"
+  - "python-multipart>=0.0.6"
+
+dev_dependencies:
+  - "pytest>=7.4.0"
+  - "pytest-asyncio>=0.21.0"
+  - "httpx>=0.25.0"
+  - "black>=23.0.0"
+  - "ruff>=0.1.0"
+  - "mypy>=1.7.0"
+
+# === BANCO DE DADOS ===
+has_database: true
+database_type: "postgresql"
+database_version: "15"
+needs_migrations: true
+orm: "sqlalchemy" # Ex: sequelize, sqlalchemy, gorm, hibernate
+connection_string: "postgresql://user:password@localhost:5432/user_management_db"
+
+# === AUTENTICAÇÃO E SEGURANÇA ===
+has_authentication: true
+auth_method: "jwt" # Ex: jwt, oauth2, session, basic
+requires_ssl: true
+cors_enabled: true
+cors_origins: ["http://localhost:3000", "https://myapp.com"]
+
+# === ESTRUTURA DE PASTAS ===
+folder_structure:
+  - "src/api - Endpoints da API"
+  - "src/models - Modelos de dados"
+  - "src/services - Lógica de negócio"
+  - "src/auth - Sistema de autenticação"
+  - "src/database - Configuração do banco"
+  - "src/schemas - Schemas Pydantic"
+  - "tests/ - Testes automatizados"
+  - "alembic/ - Migrações do banco"
+  - "docs/ - Documentação da API"
+
+# === FUNCIONALIDADES ESPECÍFICAS ===
+features:
+  - "Cadastro e login de usuários"
+  - "Autenticação JWT com refresh tokens"
+  - "Perfis de usuário com roles (admin, user, guest)"
+  - "CRUD completo de usuários"
+  - "Upload de avatar de usuário"
+  - "Reset de senha via email"
+  - "Logs de auditoria"
+  - "Rate limiting"
+  - "Documentação automática (Swagger)"
+
+# === APIS E ENDPOINTS ===
+has_api: true
+api_type: "rest"
+api_version: "v1"
+endpoints:
+  - "POST /api/v1/auth/register - Cadastro de usuário"
+  - "POST /api/v1/auth/login - Login"
+  - "POST /api/v1/auth/refresh - Renovar token"
+  - "GET /api/v1/users/me - Perfil do usuário atual"
+  - "PUT /api/v1/users/me - Atualizar perfil"
+  - "GET /api/v1/users - Listar usuários (admin)"
+  - "DELETE /api/v1/users/{id} - Deletar usuário (admin)"
+
+# === VARIÁVEIS DE AMBIENTE ===
+env_variables:
+  - "DATABASE_URL - String de conexão do banco"
+  - "JWT_SECRET_KEY - Chave secreta para JWT"
+  - "JWT_ALGORITHM - Algoritmo JWT (default: HS256)"
+  - "JWT_EXPIRE_MINUTES - Tempo de expiração do token"
+  - "SMTP_SERVER - Servidor de email"
+  - "SMTP_USER - Usuário do email"
+  - "SMTP_PASSWORD - Senha do email"
+  - "CORS_ORIGINS - Origens permitidas para CORS"
+  - "DEBUG - Modo debug (default: false)"
+
+# === TESTES E QUALIDADE ===
+testing_framework: "pytest"
+testing_automation: true
+code_quality_tools: ["ruff", "black", "mypy"]
+
+# === DOCUMENTAÇÃO E ASSETS ===
+needs_dashboards: false
+dashboards_path: ""
+dashboard_tool: ""
+needs_scripts: true
+scripts_path: "scripts"
+needs_documentation: true
+docs_path: "docs"
+documentation_style: "reStructuredText"
+api_documentation: true
+
+# === README E TEMPLATES ===
+readme_style: "beginner-friendly"
+readme_template: "pattern_code/README.template.md"
+readme_sections:
+  - "Sobre o Projeto"
+  - "Como Começar"
+  - "Pré-requisitos"
+  - "Instalação"
+  - "Como Usar"
+  - "Endpoints da API"
+  - "Desenvolvimento"
+  - "Contribuindo"
+  - "Licença"
+  - "Contato"
+readme_features:
+  - "Linguagem simples e acessível"
+  - "Passo a passo detalhado"
+  - "Exemplos de requisições"
+  - "Troubleshooting incluído"
+  - "Links para downloads"
+  - "Seção para iniciantes"
+
+# === DESENVOLVIMENTO E TESTES ===
+has_tests: true
+test_framework: "pytest"
+test_coverage_target: 90
+needs_test_plan: true
+test_plan_path: "docs/test-plan.md"
+code_style: "pep8"
+
+# === DEPLOY E CI/CD ===
+deployment_target: "docker"
+docker_port: 8000
+needs_ci_cd: true
+ci_cd_platform: "github-actions"
+deployment_stages: ["development", "staging", "production"]
+monitoring_tools: ["prometheus", "grafana"]
+
+# === LOGS E MONITORAMENTO ===
+logging_level: "INFO"
+log_format: "json"
+metrics_enabled: true
+health_check_endpoint: "/health"
+
+# === SEGURANÇA ===
+security_headers: true
+rate_limiting: true
+input_validation: true
+sql_injection_protection: true
+xss_protection: true
+
+# === CONFIGURAÇÕES DE SESSÃO ===
+session_control: true
+backup_strategy: "database"
+rollback_enabled: true
+versioning_pattern: "filename-vnnn.*"
+history_tracking: true
+callback_on_failure: true
+
+# === MCP SPECIFIC ===
+mcp_context_name: "user-management-api-context"
+mcp_capabilities:
+  - "Code completion com contexto do projeto"
+  - "Sugestões de endpoints baseadas no modelo"
+  - "Validação automática de schemas"
+  - "Geração de testes automatizados"
+  - "Documentação automática da API"
+  
+vscode_extensions:
+  - "Python"
+  - "Pylance"
+  - "REST Client"
+  - "Thunder Client"
+  - "GitLens"
+  - "Docker"
+  - "SQLTools"
+
+# === CONFIGURAÇÕES AVANÇADAS ===
+custom_scripts:
+  - "scripts/seed_database.py - Popular banco com dados iniciais"
+  - "scripts/backup_db.py - Fazer backup do banco"
+  - "scripts/deploy.py - Script de deploy automatizado"
+
+performance_optimization: true
+caching_strategy: "redis"
+background_tasks: true
+websocket_support: false
+file_upload_support: true
+email_service: true

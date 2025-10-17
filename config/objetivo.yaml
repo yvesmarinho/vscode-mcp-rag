@@ -1,0 +1,75 @@
+prompt:
+  role: user
+  content:
+    description: "Criar um template de projeto para criação de infraestrutura necessária para desenvolvimento com GitHub Copilot."
+    specification:
+      - project_name: "ai-project-template"
+      - response: "Template completo com fluxo de trabalho inteligente baseado em GitHub Copilot"
+      - docstyle: "Documentar o código segundo padrão reStructuredText do Docstring do Google, incluindo Doct test."
+      - workflow: "objetivo.yaml → Copilot → mcp-questions.yaml → MCP automático"
+      - rules:
+          - "Criar uma pasta para os arquivos do template com estrutura padronizada"
+          - "Template deve ser agnóstico a tecnologia específica"
+          - "Fluxo de trabalho deve ser guiado por prompts para GitHub Copilot"
+          - "Configuração MCP deve ser gerada automaticamente baseada nas especificações"
+          - "Sistema de versionamento e histórico deve rastrear todas as mudanças"
+          - "Template deve suportar múltiplas linguagens e tipos de projeto"
+    folder_structure:
+      - ".vscode - Configurações VS Code e MCP (geradas automaticamente)"
+      - "src - Código-fonte do projeto (estrutura específica por tipo)"
+      - "test - Testes automatizados (framework baseado na linguagem)"
+      - "docs - Documentação (gerada automaticamente)"
+      - "pattern_code - Templates e padrões de código reutilizáveis"
+      - "scripts - Scripts de automação inteligente"
+      - "objetivo.yaml - Especificação detalhada do projeto"
+      - "mcp-questions.yaml - Configuração gerada pelo Copilot"
+    expected_outcome:
+      - return_info: "Template enterprise completo com automação inteligente via GitHub Copilot para configuração MCP"
+      - workflow_result: "Fluxo de 5 etapas: init-project → analyze-objective → generate-config → build-mcp → activate-context"
+      - ai_integration: "Prompts específicos para GitHub Copilot guiarem toda a configuração"
+      - multi_technology: "Suporte automático para Python, Node.js, Go, Rust, TypeScript, Java, C#, PHP"
+    profile:
+      - role: template_architect
+        skill_level: "expert"
+        description: "Arquiteto de templates enterprise com foco em reutilização e automação."
+      - role: ai_integration_specialist
+        skill_level: "advanced"
+        description: "Especialista em integração com GitHub Copilot e automação inteligente."
+      - role: multi_technology_expert
+        skill_level: "advanced"
+        description: "Expert em múltiplas linguagens e frameworks para templates agnósticos."
+      - role: devops_automation
+        skill_level: "advanced"
+        description: "Especialista em DevOps e automação de workflows de desenvolvimento."
+    features_implemented:
+      - "Fluxo de trabalho inteligente com 5 etapas automatizadas"
+      - "Sistema de prompts específicos para GitHub Copilot"
+      - "Template agnóstico a tecnologia com adaptação automática"
+      - "Makefile com 15+ targets seguindo novo fluxo de trabalho"
+      - "Scripts Python inteligentes para geração de configurações"
+      - "Suporte nativo a múltiplas linguagens e frameworks"
+      - "Templates de código com padrões reStructuredText"
+      - "Documentação automática baseada na configuração"
+      - "Configuração VS Code dinâmica e específica por projeto"
+      - "Estrutura de pastas extensível e padronizada"
+      - "Sistema de geração de HISTORICO.md cronológico para callback de sessões"
+      - "Versionamento automático de arquivos editados (filename-vnnn.* pattern)"
+      - "Backup e recuperação de códigos com falha na execução"
+      - "Rastreamento completo de mudanças e rollback automático"
+
+  imperative_directives:
+    - id: "no-terminal-exec"
+      directive: "NUNCA executar comandos no terminal automaticamente devido ao bug do VS Code com Copilot que causa loops."
+      rationale: "Evitar travamentos e loops de execução indesejados."
+    - id: "generate-shell-scripts"
+      directive: "Sempre gerar scripts de shell idempotentes para qualquer operação (setup, diagnose, build, run)."
+      rationale: "Permite revisão humana e execução controlada pelo usuário."
+    - id: "scripts-must-report"
+      directive: "Scripts devem produzir um relatório detalhado (stdout) e salvar em arquivos dentro de 'reports/'."
+      rationale: "Facilita auditoria, versionamento e análise posterior pelo Copilot."
+    - id: "no-network-secret-leak"
+      directive: "Nunca imprimir valores de segredos; somente indicar se estão definidos (true/false)."
+      rationale: "Proteção de credenciais e conformidade."
+    - id: "minimal-assumptions"
+      directive: "Em caso de falta de contexto, assumir defaults seguros e documentar as suposições no relatório."
+      rationale: "Transparência e reprodutibilidade."

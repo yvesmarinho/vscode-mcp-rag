@@ -1,0 +1,74 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    container_name: qdrant
+
+    # Ports: 6333 (REST API), 6334 (gRPC), 6335 (internal)
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+
+    expose:
+      - 6333
+      - 6334
+      - 6335
+
+    # Health check to verify service availability
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+    # Configuration
+    configs:
+      - source: qdrant_config
+        target: /qdrant/config/production.yaml
+
+    # Persistent storage for collections
+    volumes:
+      - qdrant_storage:/qdrant/storage
+
+    # Environment variables for optional API key support
+    environment:
+      # Set to non-empty value to enable API key authentication
+      # Example: QDRANT_API_KEY=your-secure-key-here
+      QDRANT_API_KEY: ${QDRANT_API_KEY:-}
+
+    # Network configuration
+    networks:
+      - app-network
+
+    # Resource limits (adjust based on your system)
+    # Uncomment to enforce limits
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '2'
+    #       memory: 2G
+    #     reservations:
+    #       cpus: '1'
+    #       memory: 1G
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+
+configs:
+  qdrant_config:
+    content: |
+      log_level: INFO
+
+networks:
+  app-network:
+    driver: bridge
+    name: app-network
+
+# Named volume for persistent storage (more portable than bind mounts)
+volumes:
+  qdrant_storage:
+    driver: local

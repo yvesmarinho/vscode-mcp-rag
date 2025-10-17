@@ -1,0 +1,2 @@
+# OpenAI embeddings provider
+openai>=1.30.0

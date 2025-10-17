@@ -1,0 +1,31 @@
+[project]
+name = "ai-project-template"
+version = "0.1.0"
+description = "Template for AI projects with Qdrant vector database integration for VS Code"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+mcp = [
+    "qdrant-client>=1.9.0",
+    "python-dotenv>=1.0.0",
+]
+embeddings-fastembed = [
+    "fastembed>=0.3.4",
+]
+embeddings-sentencetransformers = [
+    "sentence-transformers>=3.0.0",
+]
+embeddings-openai = [
+    "openai>=1.30.0",
+]
+dev = [
+    "pytest>=7.0",
+    "black>=22.0",
+    "pylint>=2.0",
+]
+
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"

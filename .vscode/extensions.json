@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "Continue.continue",
+        "saoudrizwan.claude-dev",
+        "charliermarsh.ruff",
+        "ms-vscode.makefile-tools",
+        "ms-azuretools.vscode-docker"
+    ]
+}

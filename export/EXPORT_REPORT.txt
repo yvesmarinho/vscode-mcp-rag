@@ -1,0 +1,43 @@
+════════════════════════════════════════════════════════════════
+📦 MCP QDRANT SERVER - EXPORT REPORT
+════════════════════════════════════════════════════════════════
+
+Data/Hora: sex 17 out 2025 19:09:40 -03
+Origem: /home/yves_marinho/DevOps/Projetos/mcp_vector_project
+Destino: /home/yves_marinho/DevOps/Projetos/mcp_vector_project/export/qdrant-mcp-server_20251017_190940.tar.gz
+
+ARQUIVOS INCLUSOS:
+  ✓ ./
+  ✓ ./IMPORT_GUIDE.md
+  ✓ ./qdrant_rag_server/
+  ✓ ./qdrant_rag_server/server-http.py
+  ✓ ./qdrant_rag_server/ingest_documents.py
+  ✓ ./qdrant_rag_server/README.md
+  ✓ ./qdrant_rag_server/requirements-openai.txt
+  ✓ ./qdrant_rag_server/qdrant_create_db.py
+  ✓ ./qdrant_rag_server/requirements-sentencetransformers.txt
+  ✓ ./qdrant_rag_server/.env.example
+  ✓ ./qdrant_rag_server/server.py
+  ✓ ./qdrant_rag_server/start-daemon.sh
+  ✓ ./qdrant_rag_server/requirements-fastembed.txt
+  ✓ ./qdrant_rag_server/requirements.txt
+  ✓ ./qdrant_rag_server/start-server.sh
+
+VERIFICAÇÃO:
+  Tamanho: 12K
+  Checksum: SHA256 em qdrant-mcp-server_20251017_190940.sha256
+  Arquivos: 15
+
+PRÓXIMOS PASSOS:
+  1. Enviar arquivo para outro projeto
+  2. Extrair: tar -xzf qdrant-mcp-server_20251017_190940.tar.gz
+  3. Ler: IMPORT_GUIDE.md
+  4. Seguir instruções de instalação
+
+COMPATIBILIDADE:
+  ✅ Python 3.8+
+  ✅ Linux/Mac/Windows (WSL)
+  ✅ Qdrant 1.0+
+  ✅ VS Code + Continue Extension
+
+════════════════════════════════════════════════════════════════
