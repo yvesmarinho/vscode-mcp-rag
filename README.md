@@ -6,80 +6,162 @@ Projeto MCP (Model Context Protocol) com integração Qdrant para busca semânti
 
 **Quer começar em 5 minutos?** Leia [`docs/setup/QUICKSTART.md`](docs/setup/QUICKSTART.md)
 
-## Estrutura do Projeto
+## 🎯 Como Usar
 
-```
-├── docs/                    # Documentação
-│   ├── setup/              # Guias de instalação
-│   ├── docker/             # Documentação Docker
-│   ├── summaries/          # Resumos e conclusões
-│   └── project/            # Documentação do projeto
-├── config/                 # Arquivos de configuração
-├── mcp/                    # Servidor MCP
-├── docker/                 # Docker Compose
-├── scripts/                # Scripts utilitários
-└── export/                 # Arquivos de exportação
-```
-
-## Componentes Principais
-- `mcp/qdrant_rag_server/`: Servidor MCP para Qdrant
-- `docker/`: Infraestrutura Docker com Qdrant
-- `scripts/`: Scripts de diagnóstico e setup
-- `config/`: Configurações e templates
-
-## 📖 Documentação
-
-### Para Começar
-- **[Quick Start](docs/setup/QUICKSTART.md)** ← **COMECE AQUI** (5 min)
-- **[Setup Checklist](docs/setup/SETUP_CHECKLIST.md)** ← Lista de verificação
-- **[Início Rápido](docs/setup/INICIO_RAPIDO.md)** ← Versão em português
-
-### Configuração
-- **[Configuration](docs/project/CONFIGURATION.md)** ← Configuração detalhada
-- **[Integration](docs/project/INTEGRATION.md)** ← Integração completa
-
-### Docker & Infraestrutura
-- **[Docker Index](docs/docker/DOCKER_INDEX.md)** ← Índice Docker
-- **[Quick Reference](docs/docker/DOCKER_QUICK_REF.md)** ← Comandos rápidos
-- **[Architecture](docs/docker/DOCKER_ARCHITECTURE.md)** ← Diagramas visuais
-- **[Checklist](docs/docker/DOCKER_CHECKLIST.md)** ← Checklist de setup
-- **[Complete Guide](docs/docker/DOCKER.md)** ← Referência completa
-
-## 🛠️ Comandos Rápidos
+### 1️⃣ Setup Automático
 ```bash
-make help                   # Ver todos os comandos
-make install-fastembed      # Setup + FastEmbed
-make qdrant-start          # Iniciar Qdrant (Docker)
-make create-collection     # Criar collection
-make diagnose              # Verificar setup
-
-# Docker direto
-cd docker/
-docker-compose up -d       # Iniciar Qdrant
-docker-compose ps          # Verificar status
-curl http://localhost:6333/health  # Testar saúde
+# Configurar tudo automaticamente
+make install-fastembed      # Instalar dependências
+make qdrant-start           # Iniciar Qdrant
+make create-collection      # Criar coleção
+python scripts/setup_vscode_config.py  # Configurar VS Code
 ```
 
-## 📜 Scripts Utilitários
-1. `scripts/mcp_quickstart_report.sh [--setup]` — Plano de setup
-2. `scripts/mcp_qdrant_report.sh` — Diagnóstico completo
-3. `scripts/mcp_install_deps_report.sh [fastembed|sentence-transformers|openai]` — Instalar deps
-4. `scripts/mcp_test_ingest_report.sh [--dry-run]` — Testar ingestão
+### 2️⃣ Indexar Documentos
+```bash
+# Indexar projeto atual
+cd mcp/qdrant_rag_server
+python ingest_documents.py
 
-## Diretrizes do Projeto
-- ✅ Nenhum comando executado automaticamente
-- ✅ Scripts geram relatórios para auditoria
-- ✅ Nenhum segredo exposto em logs
-- ✅ Tudo é idempotente (seguro reexecutar)
+# Ou usar o MCP tools
+# No VS Code: @qdrant_rag ingest {"directory": "."}
+```
 
-| Arquivo | Propósito |
-|---------|-----------|
-| `QUICKSTART.md` | Guia de 5 min para começar |
-| `INTEGRATION.md` | Referência completa com exemplos |
-| `Makefile` | Atalhos para setup e testes |
-| `.vscode/extensions.json` | Extensões recomendadas (Continue, Cline, etc.) |
-| `pyproject.toml` | Dependências opcionais por provedor |
-| `mcp/qdrant_rag_server/server.py` | Servidor MCP (ingest/query tools) |
-| `mcp/qdrant_rag_server/.env.example` | Template de configuração |
-| `mcp/qdrant_rag_server/requirements*.txt` | Deps base + provedores |
-| `scripts/` | Helper scripts com relatórios |
+### 3️⃣ Buscar no VS Code
+```
+# No Continue/Cline chat:
+@qdrant_rag query "como configurar docker"
+@qdrant_rag query "explicar função main"
+```
+
+```bash
+# 1. Clonar
+git clone https://github.com/yvesmarinho/vscode-mcp-rag.git
+cd vscode-mcp-rag
+
+# 2. Setup
+docker-compose up -d qdrant  # Iniciar Qdrant
+cd mcp/qdrant_rag_server
+pip install -r requirements.txt requirements-fastembed.txt
+
+# 3. Configurar
+cp .env.example .env
+nano .env  # Ajustar se necessário
+
+# 4. Executar
+python3 qdrant_create_db.py  # Criar coleção
+./start-daemon-bg.sh         # Iniciar servidor
+./status-daemon.sh           # Verificar status
+
+# 5. VS Code: Configurar Continue/Cline
+# Ver: mcp/qdrant_rag_server/QUICK_SETUP.md
+```
+
+## 🚀 Como usar em OUTRO projeto
+
+**3 opções disponíveis:**
+
+### 1️⃣ Pacote TAR.GZ (Recomendado)
+```bash
+# Baixar release ou gerar pacote
+./export-mcp.sh  # Gera qdrant-mcp-server_*.tar.gz
+
+# Usar em outro projeto
+tar -xzf qdrant-mcp-server_*.tar.gz
+cp -r qdrant_rag_server /MEU_PROJETO/mcp/
+cd /MEU_PROJETO/mcp/qdrant_rag_server
+# Seguir QUICK_SETUP.md
+```
+
+### 2️⃣ Cópia Direta
+```bash
+cp -r mcp_vector_project/mcp/qdrant_rag_server /MEU_PROJETO/mcp/
+```
+
+### 3️⃣ Git Submodule
+```bash
+git submodule add https://github.com/yvesmarinho/vscode-mcp-rag.git vendors/mcp-rag
+cp -r vendors/mcp-rag/mcp/qdrant_rag_server /MEU_PROJETO/mcp/
+```
+
+📖 **Guias detalhados:** `mcp/qdrant_rag_server/QUICK_SETUP.md`
+
+## 🏗️ Arquitetura
+
+```
+┌─────────────────┐    ┌──────────────┐    ┌─────────────────┐
+│   VS Code       │    │ MCP Server   │    │    Qdrant      │
+│ (Continue/Cline)│◄──►│  (Python)    │◄──►│ (Vector DB)     │
+└─────────────────┘    └──────────────┘    └─────────────────┘
+                              │
+                       ┌──────────────┐
+                       │  FastEmbed   │
+                       │ (Embeddings) │
+                       └──────────────┘
+```
+
+## 🔧 Componentes
+
+- **MCP Server** (`server.py`) - Servidor JSON-RPC para VS Code
+- **Qdrant Database** - Banco vetorial (Docker)
+- **FastEmbed** - Embeddings CPU-friendly
+- **Scripts de Controle** - Daemon, status, stop
+- **Ferramentas MCP** - `ingest_documents`, `query_documents`
+
+## � Documentação
+
+- [`QUICK_SETUP.md`](mcp/qdrant_rag_server/QUICK_SETUP.md) - Setup visual
+- [`CONFIG_GUIDE.md`](mcp/qdrant_rag_server/CONFIG_GUIDE.md) - Configuração
+- [`USAGE_SUMMARY.md`](USAGE_SUMMARY.md) - Como usar em outros projetos
+- [`docs/`](docs/) - Documentação completa
+
+## 🎯 Funcionalidades
+
+- ✅ **Indexação semântica** de documentos
+- ✅ **Busca vetorial** com relevância
+- ✅ **Integração VS Code** (Continue/Cline)
+- ✅ **CPU-only** (sem necessidade de GPU)
+- ✅ **Docker** para Qdrant
+- ✅ **Scripts automatizados** para controle
+- ✅ **Configuração flexível** (.env)
+
+## 🔗 Integração VS Code
+
+### Continue (`~/.continue/config.json`)
+```json
+{
+  "mcpServers": {
+    "qdrant-rag": {
+      "command": "python3",
+      "args": ["/caminho/para/projeto/mcp/qdrant_rag_server/server.py"]
+    }
+  }
+}
+```
+
+### Cline
+Configuração similar - ver documentação específica.
+
+## 📊 Status do Projeto
+
+- **Versão:** 1.0.0
+- **Status:** ✅ Produção
+- **Última atualização:** 18/10/2025
+- **Python:** 3.8+
+- **Docker:** Qdrant latest
+- **Embeddings:** BAAI/bge-small-en-v1.5 (384d)
+
+## 🏆 Características Técnicas
+
+- **Protocol:** JSON-RPC 2.0 (MCP)
+- **Vector DB:** Qdrant (localhost:6333)
+- **Embeddings:** FastEmbed (CPU-optimized)
+- **Dimensions:** 384
+- **Distance:** Cosine similarity
+- **Storage:** Persistent volumes (Docker)
+
+---
+
+**🎯 Resultado:** Busca semântica inteligente no VS Code!
+
+Para questões, ver `docs/` ou abrir issue no GitHub.

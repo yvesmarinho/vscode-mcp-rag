@@ -3,7 +3,7 @@
 ## Complete File Tree
 
 ```
-ai_project_template/
+mcp_vector_project/
 │
 ├── 📄 README.md (UPDATED)
 │   └─ Added: Docker section with links to DOCKER_INDEX.md

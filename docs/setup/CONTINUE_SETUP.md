@@ -53,7 +53,7 @@ O MCP Server vai:
       "command": "bash",
       "args": [
         "-c",
-        "cd /home/yves_marinho/Documentos/DevOps/Projetos/ai_project_template && python3 mcp/qdrant_rag_server/server.py"
+        "cd /home/yves_marinho/Documentos/DevOps/Projetos/mcp_vector_project && python3 mcp/qdrant_rag_server/server.py"
       ]
     }
   }
@@ -318,7 +318,7 @@ make mcp-status
 make qdrant-health
 
 # 2. Abrir VS Code
-code /home/yves_marinho/Documentos/DevOps/Projetos/ai_project_template
+code /home/yves_marinho/Documentos/DevOps/Projetos/mcp_vector_project
 
 # 3. No VS Code:
 #    - Ctrl+Shift+P

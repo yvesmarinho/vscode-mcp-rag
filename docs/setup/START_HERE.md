@@ -103,7 +103,7 @@ make qdrant-health         # Check Qdrant status
 ## 📁 Project Structure
 
 ```
-ai_project_template/
+mcp_vector_project/
 ├── QUICKSTART.md              ← START HERE
 ├── SETUP_CHECKLIST.md         ← Follow this
 ├── CONFIGURATION.md           ← Configuration reference

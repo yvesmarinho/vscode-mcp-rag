@@ -131,7 +131,7 @@ make qdrant-health
 
 ### 2️⃣ Abrir VS Code
 ```bash
-code ~/Documentos/DevOps/Projetos/ai_project_template
+code ~/Documentos/DevOps/Projetos/mcp_vector_project
 ```
 
 ### 3️⃣ Abrir Continue
@@ -235,7 +235,7 @@ Continue (com contexto do código):
 
 ```bash
 # 1. Abrir projeto
-code ~/Documentos/DevOps/Projetos/ai_project_template
+code ~/Documentos/DevOps/Projetos/mcp_vector_project
 
 # 2. Abrir Continue (Ctrl+Shift+P → "Continue: Open Sidebar")
 

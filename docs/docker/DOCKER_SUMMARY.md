@@ -338,7 +338,7 @@ scripts/mcp_test_ingest_report.sh   ← Test ingest
 
 ## 📝 Summary
 
-Your ai_project_template now has:
+Your mcp_vector_project now has:
 
 1. **✅ Production-Ready Docker Setup**
    - Optimized docker-compose.yaml with 4 improvements

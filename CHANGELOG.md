@@ -61,7 +61,7 @@ Resumo completo das alterações para integrar Qdrant com VS Code.
 - **README.md** — Atualizado com quick-start, componentes, documentação links
 - **.gitignore** — Adicionado `.env`, `.env.local`, `reports/`, `.idea/`, etc.
 - **pyproject.toml** — Adicionadas dependências opcionais (mcp, embeddings-*, dev)
-- **ai_project_template.code-workspace** — Adicionadas settings Python, extensions recommendations
+- **mcp_vector_project.code-workspace** — Adicionadas settings Python, extensions recommendations
 
 ### MCP Server
 - **mcp/qdrant_rag_server/README.md** — Adicionada referência a INTEGRATION.md
@@ -153,7 +153,7 @@ Resumo completo das alterações para integrar Qdrant com VS Code.
 ## 📊 Files Structure (Now)
 
 ```
-ai_project_template/
+mcp_vector_project/
 ├── README.md                          # Atualizado: main entry point
 ├── QUICKSTART.md                      # Novo: 5-min guide
 ├── CONFIGURATION.md                   # Novo: detailed config reference
@@ -163,7 +163,7 @@ ai_project_template/
 ├── Makefile                           # Novo: convenient commands
 ├── pyproject.toml                     # Atualizado: optional dependencies
 ├── .gitignore                         # Atualizado: .env, reports/
-├── ai_project_template.code-workspace # Atualizado: settings + extensions
+├── mcp_vector_project.code-workspace # Atualizado: settings + extensions
 ├── .vscode/
 │   ├── extensions.json                # Novo: recommended extensions
 │   └── continue.config.json.example   # Novo: Continue example

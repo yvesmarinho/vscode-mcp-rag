@@ -120,7 +120,7 @@ python3 -c "from qdrant_client import QdrantClient; print('✅ OK')"
 ## 🔗 Arquivos de Suporte no Projeto
 
 ```
-/home/yves_marinho/Documentos/DevOps/Projetos/ai_project_template/export/
+/home/yves_marinho/Documentos/DevOps/Projetos/mcp_vector_project/export/
 ├── qdrant-mcp-server_20251017_173804.tar.gz    (Arquivo principal)
 ├── qdrant-mcp-server_20251017_173804.sha256    (Checksum)
 ├── EXPORT_REPORT.txt                            (Relatório)

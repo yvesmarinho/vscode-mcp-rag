@@ -1,17 +1,22 @@
-#!/home/yves_marinho/DevOps/Projetos/mcp_vector_project/.venv/bin/python
+#!/usr/bin/env python3
 """
 Script para indexar todos os documentos do projeto no Qdrant.
 Usa o servidor MCP diretamente para indexação eficiente.
 """
 
+import os
 import sys
 import logging
 from pathlib import Path
+from dotenv import load_dotenv
 
-# Adicionar o servidor MCP ao path
-project_root = Path(__file__).parent
-mcp_server_path = project_root / "mcp" / "qdrant_rag_server"
-sys.path.insert(0, str(mcp_server_path))
+# Adicionar o servidor MCP ao path (detecta automaticamente)
+script_dir = Path(__file__).parent.absolute()
+project_root = script_dir.parent.parent  # mcp_vector_project root
+sys.path.insert(0, str(script_dir))
+
+# Carregar configuração do .env
+load_dotenv(script_dir / ".env")
 
 # Configurar logging
 logging.basicConfig(
@@ -26,9 +31,10 @@ def check_environment():
     logger.info("🔍 Verificando ambiente...")
     
     # Verificar se o Qdrant está rodando
+    qdrant_url = os.getenv("QDRANT_URL", "http://localhost:6333")
     try:
         import requests
-        response = requests.get("http://localhost:6333/collections", timeout=5)
+        response = requests.get(f"{qdrant_url}/collections", timeout=5)
         if response.status_code == 200:
             logger.info("✅ Qdrant está rodando")
         else:
@@ -40,7 +46,7 @@ def check_environment():
         return False
     
     # Verificar se o servidor MCP existe
-    server_py = mcp_server_path / "server.py"
+    server_py = script_dir / "server.py"
     if not server_py.exists():
         logger.error(f"❌ Servidor MCP não encontrado: {server_py}")
         return False
@@ -58,11 +64,15 @@ def ingest_documents():
         from server import Embeddings, QdrantIndex, handle_ingest
         from qdrant_client import QdrantClient
         
+        # Obter configurações do .env
+        qdrant_url = os.getenv("QDRANT_URL", "http://localhost:6333")
+        collection_name = os.getenv("QDRANT_COLLECTION", "project_docs")
+        
         # Inicializar componentes
         logger.info("🔧 Inicializando componentes...")
-        client = QdrantClient(url='http://localhost:6333')
+        client = QdrantClient(url=qdrant_url)
         embeddings = Embeddings()
-        index = QdrantIndex(client, 'project_docs')
+        index = QdrantIndex(client, collection_name)
         
         # Parâmetros de ingestão
         params = {
@@ -85,7 +95,7 @@ def ingest_documents():
             ],
             'chunk_size': 800,
             'overlap': 100,
-            'collection': 'project_docs'
+            'collection': collection_name
         }
         
         logger.info(f"📁 Diretório: {params['directory']}")
@@ -127,10 +137,13 @@ def get_collection_stats():
     try:
         from qdrant_client import QdrantClient
         
-        client = QdrantClient(url='http://localhost:6333')
-        collection_info = client.get_collection('project_docs')
+        qdrant_url = os.getenv("QDRANT_URL", "http://localhost:6333")
+        collection_name = os.getenv("QDRANT_COLLECTION", "project_docs")
         
-        logger.info("📊 Estatísticas da coleção 'project_docs':")
+        client = QdrantClient(url=qdrant_url)
+        collection_info = client.get_collection(collection_name)
+        
+        logger.info(f"📊 Estatísticas da coleção '{collection_name}':")
         logger.info(f"  Pontos: {collection_info.points_count}")
         logger.info(f"  Vetores: {collection_info.vectors_count}")
         logger.info(f"  Status: {collection_info.status}")

@@ -29,7 +29,7 @@ Welcome! Here's where to find what you need.
 
 ### 🛠 Project Structure
 ```
-ai_project_template/
+mcp_vector_project/
 ├── START_HERE.md              ⭐ Visual overview (START HERE!)
 ├── QUICKSTART.md              ⭐ 5-minute setup guide
 ├── SETUP_CHECKLIST.md         ⭐ Step-by-step checklist
@@ -40,7 +40,7 @@ ai_project_template/
 │
 ├── Makefile                   🛠  Convenient commands
 ├── pyproject.toml             🛠  Project configuration
-├── ai_project_template.code-workspace  🛠  VS Code workspace
+├── mcp-vecxtor-project.code-workspace  🛠  VS Code workspace
 │
 ├── .vscode/
 │   ├── extensions.json        📋 Recommended extensions

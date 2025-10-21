@@ -108,7 +108,7 @@ Status: Active (running)
 
 ### **1. Iniciar Qdrant (se não estiver rodando)**
 ```bash
-cd /home/yves_marinho/Documentos/DevOps/Projetos/ai_project_template
+cd /home/yves_marinho/Documentos/DevOps/Projetos/mcp_vector_project
 docker-compose -f docker/docker-compose.yaml up -d
 ```
 

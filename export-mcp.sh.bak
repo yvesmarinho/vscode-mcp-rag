@@ -1,0 +1,597 @@
+#!/bin/bash
+# 📦 Script para exportar o MCP Server para outro projeto
+# Cria um arquivo compactado pronto para usar em qualquer projeto
+
+set -e
+
+echo "════════════════════════════════════════════════════════════════"
+echo "📦 MCP QDRANT SERVER - EXPORT SCRIPT"
+echo "════════════════════════════════════════════════════════════════"
+echo ""
+
+# Colors
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+NC='\033[0m' # No Color
+
+# Variáveis
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MCP_SOURCE="${PROJECT_ROOT}/mcp/qdrant_rag_server"
+EXPORT_DIR="${PROJECT_ROOT}/export"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+EXPORT_NAME="qdrant-mcp-server_${TIMESTAMP}"
+ARCHIVE="${EXPORT_DIR}/${EXPORT_NAME}.tar.gz"
+
+echo -e "${BLUE}📍 Projeto: ${PROJECT_ROOT}${NC}"
+echo -e "${BLUE}📍 Origem: ${MCP_SOURCE}${NC}"
+echo ""
+
+# 1. Criar diretório de export
+echo -e "${YELLOW}1️⃣ Criando diretório de export...${NC}"
+mkdir -p "${EXPORT_DIR}"
+echo -e "${GREEN}✅ Diretório criado${NC}"
+echo ""
+
+# 2. Copiar arquivos
+echo -e "${YELLOW}2️⃣ Preparando arquivos...${NC}"
+TEMP_DIR=$(mktemp -d)
+trap "rm -rf ${TEMP_DIR}" EXIT
+
+mkdir -p "${TEMP_DIR}/qdrant_rag_server"
+cd "${MCP_SOURCE}"
+
+# Copiar arquivos mantendo estrutura
+echo "   Copiando arquivos principais..."
+cp -v server.py "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v qdrant_create_db.py "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v ingest_documents.py "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v server-http.py "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+
+echo "   Copiando scripts de controle..."
+cp -v start-daemon.sh "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v start-daemon-bg.sh "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v start-server.sh "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v stop-daemon.sh "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v status-daemon.sh "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+
+echo "   Tornando scripts executáveis..."
+chmod +x "${TEMP_DIR}/qdrant_rag_server/"*.sh 2>/dev/null || true
+
+echo "   Copiando configurações..."
+cp -v .env.example "${TEMP_DIR}/qdrant_rag_server/.env.example" 2>/dev/null || true
+cp -v CONFIG_GUIDE.md "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v requirements.txt "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v requirements-fastembed.txt "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v requirements-sentencetransformers.txt "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v requirements-openai.txt "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v README.md "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+cp -v QUICK_SETUP.md "${TEMP_DIR}/qdrant_rag_server/" 2>/dev/null || true
+
+echo -e "${GREEN}✅ Arquivos copiados${NC}"
+echo ""
+
+# 3. Criar README de importação
+echo -e "${YELLOW}3️⃣ Criando guia de importação...${NC}"
+cat > "${TEMP_DIR}/IMPORT_GUIDE.md" << 'EOF'
+# 📦 MCP Qdrant Server - Guia de Uso em Outros Projetos
+
+## 🚀 Como integrar em seu projeto
+
+### ⭐ OPÇÃO 1: Usar o Pacote (Recomendado)
+```bash
+# 1. Extrair onde desejar
+tar -xzf qdrant-mcp-server_*.tar.gz
+
+# 2. Copiar para seu projeto
+cp -r qdrant_rag_server /caminho/completo/para/seu/projeto/mcp/
+
+# Exemplo prático:
+cp -r qdrant_rag_server ~/meus_projetos/projeto_ai/mcp/
+```
+
+### 🔄 OPÇÃO 2: Cópia Direta (Desenvolvimento)
+```bash
+# Se você tem acesso ao projeto original
+cp -r /caminho/do/mcp_vector_project/mcp/qdrant_rag_server \
+      /caminho/para/seu/projeto/mcp/
+
+# Exemplo:
+cp -r ~/Downloads/mcp_vector_project/mcp/qdrant_rag_server \
+      ~/meu_projeto/mcp/
+```
+
+### 🌐 OPÇÃO 3: Git Clone + Copiar
+```bash
+# 1. Clonar projeto original
+git clone https://github.com/yvesmarinho/vscode-mcp-rag.git /tmp/mcp-source
+
+# 2. Copiar para seu projeto  
+cp -r /tmp/mcp-source/mcp/qdrant_rag_server /seu/projeto/mcp/
+
+# 3. Limpar
+rm -rf /tmp/mcp-source
+```
+
+---
+
+## ⚙️ Setup Após Copiar (TODAS as opções)
+
+### Passo 1: Ir para a pasta copiada
+```bash
+cd /seu/projeto/mcp/qdrant_rag_server
+```
+
+### Passo 2: Configurar ambiente
+```bash
+# Criar arquivo de configuração
+cp .env.example .env
+
+# Editar configurações (OBRIGATÓRIO!)
+nano .env
+# ou
+code .env
+# ou
+vim .env
+```
+
+### Passo 3: Configuração mínima (.env)
+```bash
+# Conteúdo básico para .env
+QDRANT_URL=http://localhost:6333
+QDRANT_COLLECTION=project_docs
+EMBEDDINGS_PROVIDER=fastembed
+MODEL_NAME=BAAI/bge-small-en-v1.5
+VECTOR_SIZE=384
+DISTANCE=COSINE
+```
+
+### Passo 4: Instalar dependências
+```bash
+# CPU-only (recomendado)
+pip install -r requirements.txt
+pip install -r requirements-fastembed.txt
+
+# OU com GPU
+pip install -r requirements.txt
+pip install -r requirements-sentencetransformers.txt
+
+# OU com OpenAI
+pip install -r requirements.txt
+pip install -r requirements-openai.txt
+```
+
+### Passo 5: Tornar scripts executáveis
+```bash
+chmod +x *.sh
+```
+
+### Passo 6: Inicializar banco de dados
+```bash
+# Verificar se Qdrant está rodando
+curl http://localhost:6333/health
+
+# Criar coleção
+python3 qdrant_create_db.py
+```
+
+### Passo 7: Testar MCP Server
+```bash
+# Teste rápido
+./start-server.sh
+
+# OU daemon em background
+./start-daemon-bg.sh
+./status-daemon.sh
+```
+
+---
+
+## 📁 Estrutura Final no Seu Projeto
+
+```
+/seu/projeto/
+├── src/                     # Seu código
+├── docs/                    # Sua documentação  
+├── mcp/                     # ← Pasta MCP
+│   └── qdrant_rag_server/   # ← Copiado do pacote
+│       ├── server.py        # Servidor MCP
+│       ├── qdrant_create_db.py
+│       ├── .env             # ← Criado por você
+│       ├── .env.example
+│       ├── start-*.sh
+│       └── requirements*.txt
+├── README.md
+└── .gitignore               # ← Adicionar .env aqui!
+```
+
+---
+
+## 🔗 Integração VS Code
+
+### Para Continue (~/.continue/config.json)
+```json
+{
+  "mcpServers": {
+    "qdrant-rag": {
+      "command": "python3",
+      "args": ["/caminho/absoluto/para/seu/projeto/mcp/qdrant_rag_server/server.py"],
+      "env": {
+        "QDRANT_URL": "http://localhost:6333",
+        "QDRANT_COLLECTION": "project_docs",
+        "EMBEDDINGS_PROVIDER": "fastembed"
+      }
+    }
+  }
+}
+```
+
+### Para Cline
+```json
+{
+  "mcpServers": {
+    "projeto-rag": {
+      "command": "bash",
+      "args": [
+        "-c", 
+        "cd /caminho/para/seu/projeto && python3 mcp/qdrant_rag_server/server.py"
+      ]
+    }
+  }
+}
+```
+
+---
+
+## 🎯 Exemplos Práticos
+
+### Exemplo 1: Projeto Web
+```bash
+# Sua estrutura
+/home/user/meu_site/
+├── frontend/
+├── backend/  
+└── mcp/qdrant_rag_server/  ← Copiar aqui
+
+# Comando
+cp -r qdrant_rag_server /home/user/meu_site/mcp/
+```
+
+### Exemplo 2: Projeto Python
+```bash
+# Sua estrutura  
+/home/user/minha_ia/
+├── src/
+├── tests/
+└── mcp/qdrant_rag_server/  ← Copiar aqui
+
+# Comando
+cp -r qdrant_rag_server /home/user/minha_ia/mcp/
+```
+
+### Exemplo 3: Múltiplos Projetos
+```bash
+# Colocar em local compartilhado
+mkdir -p ~/.local/share/mcp/
+cp -r qdrant_rag_server ~/.local/share/mcp/
+
+# Usar em qualquer projeto
+# Continue config:
+"command": "python3",
+"args": ["/home/user/.local/share/mcp/qdrant_rag_server/server.py"]
+```
+
+---
+
+## ✅ Checklist de Verificação
+
+- [ ] ✅ Pacote extraído ou pasta copiada
+- [ ] ✅ Localizado em `/seu/projeto/mcp/qdrant_rag_server/`
+- [ ] ✅ Arquivo `.env` criado e configurado
+- [ ] ✅ Dependências instaladas (`pip install -r requirements*.txt`)
+- [ ] ✅ Scripts executáveis (`chmod +x *.sh`)
+- [ ] ✅ Qdrant rodando (`curl http://localhost:6333/health`)
+- [ ] ✅ Coleção criada (`python3 qdrant_create_db.py`)
+- [ ] ✅ Servidor testado (`./start-server.sh`)
+- [ ] ✅ VS Code configurado (Continue/Cline)
+- [ ] ✅ `.env` adicionado ao `.gitignore`
+
+---
+
+## 🆘 Problemas Comuns
+
+### "Pasta não encontrada"
+```bash
+# Verificar onde copiou
+find /seu/projeto -name "qdrant_rag_server" -type d
+
+# Criar estrutura se necessário
+mkdir -p /seu/projeto/mcp
+cp -r qdrant_rag_server /seu/projeto/mcp/
+```
+
+### "Caminho errado no VS Code"
+```bash
+# Descobrir caminho absoluto
+cd /seu/projeto/mcp/qdrant_rag_server
+pwd
+# Use este caminho no config.json do Continue
+```
+
+### "Módulos não encontrados"
+```bash
+# Instalar no ambiente correto
+cd /seu/projeto/mcp/qdrant_rag_server
+pip install -r requirements.txt
+pip install -r requirements-fastembed.txt
+```
+
+---
+
+## 📞 Suporte
+
+**Arquivos importantes:**
+- `CONFIG_GUIDE.md` - Configuração detalhada
+- `.env.example` - Template completo
+- `README.md` - Documentação do servidor
+
+**Para debug:**
+```bash
+# Ver logs do daemon
+tail -f /seu/projeto/mcp/qdrant_rag_server/server.log
+
+# Testar conexão Qdrant
+curl http://localhost:6333/collections
+
+# Testar servidor MCP
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | \
+  python3 /seu/projeto/mcp/qdrant_rag_server/server.py
+```
+
+---
+
+**🎯 Resultado:** MCP Server funcionando com busca semântica no seu projeto!
+EOF
+
+## 📋 Checklist de Compatibilidade
+
+- ✅ Python 3.8+ (recomendado 3.10+)
+- ✅ Qdrant rodando (Docker ou local)
+- ✅ pip disponível
+- ✅ Porta 6333 disponível (Qdrant)
+- ✅ ~/.continue/config.json configurado (para VS Code)
+
+## ⚙️ Configuração Essencial (.env)
+
+```ini
+# Qdrant
+QDRANT_URL=http://localhost:6333
+QDRANT_API_KEY=seu-api-key-aqui
+QDRANT_COLLECTION=seu-collection-name
+
+# Embeddings
+EMBEDDINGS_PROVIDER=fastembed
+MODEL_NAME=BAAI/bge-small-en-v1.5
+VECTOR_SIZE=384
+DISTANCE=COSINE
+```
+
+## 🔌 Integração com Continue (VS Code)
+
+Editar `~/.continue/config.json`:
+
+```json
+{
+  "mcpServers": {
+    "seu-projeto-mcp": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "cd /seu/projeto && python3 mcp/qdrant_rag_server/server.py"
+      ]
+    }
+  }
+}
+```
+
+## 📁 Estrutura esperada no seu projeto
+
+```
+/seu/projeto/
+├── mcp/
+│   └── qdrant_rag_server/
+│       ├── server.py                    # Servidor MCP principal
+│       ├── qdrant_create_db.py         # Script para criar coleção
+│       ├── ingest_documents.py         # Script de ingestão
+│       ├── server-http.py              # Servidor HTTP alternativo
+│       │
+│       ├── start-server.sh             # Iniciar servidor interativo
+│       ├── start-daemon.sh             # Daemon (modo console)
+│       ├── start-daemon-bg.sh          # Daemon em background
+│       ├── stop-daemon.sh              # Parar daemon
+│       ├── status-daemon.sh            # Status do daemon
+│       │
+│       ├── .env                        # ⚠️ CRIAR: Configurações (cp .env.example .env)
+│       ├── .env.example                # Template de configuração
+│       ├── CONFIG_GUIDE.md             # 📖 Guia completo de configuração
+│       ├── requirements.txt            # Dependências base
+│       ├── requirements-fastembed.txt  # Dependências FastEmbed
+│       ├── requirements-sentencetransformers.txt # Dependências SentenceTransformers
+│       ├── requirements-openai.txt     # Dependências OpenAI
+│       └── README.md                   # Documentação
+└── ...
+```
+
+## 🆘 Troubleshooting
+
+### Erro: "qdrant_client not found"
+```bash
+pip install -r mcp/qdrant_rag_server/requirements.txt
+```
+
+### Erro: "Cannot connect to Qdrant"
+```bash
+# Verificar se Qdrant está rodando
+docker ps | grep qdrant
+# Ou iniciar Qdrant
+docker-compose up -d qdrant
+```
+
+### Erro: "FastEmbed model not found"
+```bash
+pip install -r mcp/qdrant_rag_server/requirements-fastembed.txt
+```
+
+## ✅ Testes rápidos
+
+### Testar importação de módulos
+```bash
+python3 -c "from qdrant_client import QdrantClient; print('✅ OK')"
+```
+
+### Testar MCP Server
+```bash
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' | \
+  python3 mcp/qdrant_rag_server/server.py
+```
+
+### Testar conexão Qdrant
+```bash
+curl http://localhost:6333/collections
+```
+
+### Testar scripts de daemon
+```bash
+cd /seu/projeto/mcp/qdrant_rag_server
+
+# Testar daemon em background
+./start-daemon-bg.sh
+./status-daemon.sh
+./stop-daemon.sh
+
+# Verificar que todos os scripts são executáveis
+ls -la *.sh
+```
+
+## 📞 Suporte
+
+Verifique os arquivos:
+- `README.md` - Documentação detalhada
+- `server.py` - Código comentado
+- `.env.example` - Template de configuração
+
+---
+
+**Pronto para usar em qualquer projeto!** 🚀
+EOF
+
+echo -e "${GREEN}✅ Guia de importação criado${NC}"
+echo ""
+
+# 4. Criar arquivo compactado
+echo -e "${YELLOW}4️⃣ Compactando arquivos...${NC}"
+cd "${TEMP_DIR}"
+tar -czf "${ARCHIVE}" . 2>/dev/null
+
+if [ -f "${ARCHIVE}" ]; then
+    SIZE=$(du -h "${ARCHIVE}" | cut -f1)
+    echo -e "${GREEN}✅ Arquivo criado: ${ARCHIVE}${NC}"
+    echo -e "${GREEN}   Tamanho: ${SIZE}${NC}"
+else
+    echo -e "\033[0;31m❌ Erro ao criar arquivo${NC}"
+    exit 1
+fi
+echo ""
+
+# 6. Criar checksum
+echo -e "${YELLOW}5️⃣ Gerando checksum...${NC}"
+cd "${EXPORT_DIR}"
+sha256sum "${EXPORT_NAME}.tar.gz" > "${EXPORT_NAME}.sha256"
+echo -e "${GREEN}✅ Checksum criado${NC}"
+echo ""
+
+# 7. Criar script de verificação
+echo -e "${YELLOW}6️⃣ Criando script de verificação...${NC}"
+cat > "${EXPORT_DIR}/verify.sh" << 'EOF'
+#!/bin/bash
+echo "🔍 Verificando integridade do arquivo..."
+if sha256sum -c *.sha256 2>/dev/null; then
+    echo "✅ Arquivo íntegro!"
+else
+    echo "❌ Arquivo corrompido!"
+    exit 1
+fi
+EOF
+chmod +x "${EXPORT_DIR}/verify.sh"
+echo -e "${GREEN}✅ Script de verificação criado${NC}"
+echo ""
+
+# 8. Gerar relatório
+echo -e "${YELLOW}7️⃣ Gerando relatório...${NC}"
+cat > "${EXPORT_DIR}/EXPORT_REPORT.txt" << EOF
+════════════════════════════════════════════════════════════════
+📦 MCP QDRANT SERVER - EXPORT REPORT
+════════════════════════════════════════════════════════════════
+
+Data/Hora: $(date)
+Origem: ${PROJECT_ROOT}
+Destino: ${ARCHIVE}
+
+ARQUIVOS INCLUSOS:
+$(tar -tzf "${ARCHIVE}" | sed 's/^/  ✓ /')
+
+VERIFICAÇÃO:
+  Tamanho: ${SIZE}
+  Checksum: SHA256 em ${EXPORT_NAME}.sha256
+  Arquivos: $(tar -tzf "${ARCHIVE}" | wc -l)
+
+PRÓXIMOS PASSOS:
+  1. Enviar arquivo para outro projeto
+  2. Extrair: tar -xzf ${EXPORT_NAME}.tar.gz
+  3. Ler: IMPORT_GUIDE.md
+  4. Seguir instruções de instalação
+
+COMPATIBILIDADE:
+  ✅ Python 3.8+
+  ✅ Linux/Mac/Windows (WSL)
+  ✅ Qdrant 1.0+
+  ✅ VS Code + Continue Extension
+
+════════════════════════════════════════════════════════════════
+EOF
+
+echo -e "${GREEN}✅ Relatório criado${NC}"
+echo ""
+
+# 9. Resumo final
+echo "════════════════════════════════════════════════════════════════"
+echo -e "${GREEN}✅ EXPORT COMPLETO!${NC}"
+echo "════════════════════════════════════════════════════════════════"
+echo ""
+echo -e "${BLUE}📦 Arquivo gerado:${NC}"
+echo "   ${ARCHIVE}"
+echo ""
+echo -e "${BLUE}📋 Arquivo contém:${NC}"
+tar -tzf "${ARCHIVE}" | head -15
+if [ $(tar -tzf "${ARCHIVE}" | wc -l) -gt 15 ]; then
+    echo "   ... e mais $(( $(tar -tzf "${ARCHIVE}" | wc -l) - 15 )) arquivos"
+fi
+echo ""
+echo -e "${BLUE}📊 Tamanho: ${SIZE}${NC}"
+echo ""
+echo -e "${BLUE}🔒 Integridade:${NC}"
+echo "   cat ${EXPORT_NAME}.sha256"
+echo ""
+echo -e "${BLUE}📖 Guia de uso:${NC}"
+echo "   1. tar -xzf ${EXPORT_NAME}.tar.gz"
+echo "   2. cd qdrant_rag_server"
+echo "   3. cat IMPORT_GUIDE.md"
+echo ""
+echo -e "${BLUE}✨ Arquivos de suporte:${NC}"
+echo "   • IMPORT_GUIDE.md - Instruções detalhadas"
+echo "   • EXPORT_REPORT.txt - Este relatório"
+echo "   • verify.sh - Verificar integridade"
+echo ""
+echo "════════════════════════════════════════════════════════════════"
+echo -e "${GREEN}Pronto para compartilhar! 🚀${NC}"
+echo "════════════════════════════════════════════════════════════════"

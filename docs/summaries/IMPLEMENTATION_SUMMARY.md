@@ -21,7 +21,7 @@
 - Suporte a diferentes vector sizes
 
 ### 3. **VS Code Integration** ✅
-- Workspace configurado (`ai_project_template.code-workspace`)
+- Workspace configurado (`mcp-vecxtor-project.code-workspace`)
 - Continue client config example
 - Cline integration guide
 - Extensões recomendadas
@@ -72,7 +72,7 @@ CHANGELOG.md                   [NEW] What changed
 Makefile                       [NEW] Convenient commands
 pyproject.toml                 [UPDATED] Optional dependencies
 .gitignore                     [UPDATED] .env, reports/, etc.
-ai_project_template.code-workspace [UPDATED] Settings + extensions
+mcp-vecxtor-project.code-workspace [UPDATED] Settings + extensions
 ```
 
 ### MCP Server & Scripts

@@ -1,6 +1,6 @@
 # 📁 ESTRUTURA: ./mcp/qdrant_rag_server
 
-**Localização:** `/home/yves_marinho/Documentos/DevOps/Projetos/ai_project_template/mcp/qdrant_rag_server`
+**Localização:** `/home/yves_marinho/Documentos/DevOps/Projetos/mcp_vector_project/mcp/qdrant_rag_server`
 
 Sim! Esta pasta contém **TODOS** os códigos e configurações da integração entre:
 - 🤖 **Code/Continue** (VS Code extension)

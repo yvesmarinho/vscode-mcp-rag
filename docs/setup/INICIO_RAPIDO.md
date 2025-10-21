@@ -9,7 +9,7 @@
 ### 1️⃣ Abra VS Code
 
 ```bash
-code ~/Documentos/DevOps/Projetos/ai_project_template
+code ~/Documentos/DevOps/Projetos/mcp_vector_project
 ```
 
 ### 2️⃣ Abra o Continue

@@ -9,6 +9,11 @@
       "title": "GPT-3.5 Turbo",
       "provider": "openai",
       "model": "gpt-3.5-turbo"
+    },
+    {
+      "title": "Claude 3.5 Sonnet",
+      "provider": "anthropic",
+      "model": "claude-3-5-sonnet-20241022"
     }
   ],
   "mcpServers": {
@@ -17,6 +22,7 @@
       "args": [
         "mcp/qdrant_rag_server/server.py"
       ],
+      "cwd": ".",
       "env": {
         "QDRANT_URL": "http://localhost:6333",
         "QDRANT_COLLECTION": "project_docs",
@@ -28,6 +34,9 @@
   "tabAutocompleteModel": {
     "title": "Autocomplete",
     "provider": "openai",
+    "model": "gpt-3.5-turbo"
+  }
+}
     "model": "gpt-3.5-turbo"
   }
 }

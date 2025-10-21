@@ -10,7 +10,7 @@
 ### Passo 1: Abrir VS Code
 
 ```bash
-code /home/yves_marinho/Documentos/DevOps/Projetos/ai_project_template
+code /home/yves_marinho/Documentos/DevOps/Projetos/mcp_vector_project
 ```
 
 ### Passo 2: Abrir Continue

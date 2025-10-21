@@ -76,7 +76,11 @@ def main():
     vector_size = int(os.getenv("VECTOR_SIZE", "384"))
     distance = os.getenv("DISTANCE", "COSINE")
 
-    client = QdrantClient(url=qdrant_url, api_key=qdrant_key)
+    # Para localhost, não usar API key para evitar warning de conexão insegura
+    if "localhost" in qdrant_url or "127.0.0.1" in qdrant_url:
+        client = QdrantClient(url=qdrant_url)
+    else:
+        client = QdrantClient(url=qdrant_url, api_key=qdrant_key)
 
     # force_recreate=False cria apenas se não existir; troque para True se quiser recriar do zero
     ensure_collection(

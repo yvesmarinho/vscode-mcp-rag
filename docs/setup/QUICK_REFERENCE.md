@@ -87,7 +87,7 @@ curl http://localhost:6333/collections/project_docs
 ## 📁 Diretórios Importantes
 
 ```
-/home/yves_marinho/Documentos/DevOps/Projetos/ai_project_template/
+/home/yves_marinho/Documentos/DevOps/Projetos/mcp_vector_project/
 ├── docker/
 │   └── docker-compose.yaml          # Docker config
 ├── mcp/

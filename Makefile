@@ -3,32 +3,50 @@
 help:
 	@echo "MCP + Qdrant Commands:"
 	@echo ""
-	@echo "Setup:"
-	@echo "  make venv                    Create Python venv"
-	@echo "  make install-fastembed       Install MCP + FastEmbed (recommended for CPU)"
-	@echo "  make install-sentencetransformers  Install MCP + SentenceTransformers"
-	@echo "  make install-openai          Install MCP + OpenAI"
+	@echo "🚀 Quick Setup:"
+	@echo "  make setup                   Complete setup (all-in-one)"
+	@echo "  make install-fastembed       Install MCP + FastEmbed (recommended)"
+	@echo "  make configure-vscode        Configure VS Code automatically"
 	@echo ""
-	@echo "Qdrant:"
+	@echo "🐳 Qdrant:"
 	@echo "  make qdrant-start            Start Qdrant in Docker"
 	@echo "  make qdrant-stop             Stop Qdrant"
 	@echo "  make qdrant-health           Check Qdrant health"
 	@echo "  make create-collection       Create project_docs collection"
 	@echo ""
-	@echo "MCP Server:"
+	@echo "📚 Indexing:"
+	@echo "  make ingest                  Index all project documents"
+	@echo "  make test-query              Test semantic search"
+	@echo ""
+	@echo "🔧 MCP Server:"
 	@echo "  make mcp-start               Start MCP Server daemon"
 	@echo "  make mcp-stop                Stop MCP Server daemon"
 	@echo "  make mcp-status              Show MCP Server status"
 	@echo "  make mcp-logs                Show MCP Server logs"
 	@echo ""
-	@echo "Testing & Diagnostics:"
-	@echo "  make test-ingest             Test ingest (dry-run first, then real)"
+	@echo "🩺 Diagnostics:"
 	@echo "  make diagnose                Run full diagnostics"
 	@echo "  make quickstart              Show quick-start steps"
 
 venv:
 	python3 -m venv .venv
 	@echo "✓ venv created. Activate with: source .venv/bin/activate"
+
+setup: venv install-fastembed qdrant-start create-collection configure-vscode
+	@echo "🎉 Complete setup finished!"
+	@echo "Next: Open VS Code and use @qdrant_rag in Continue/Cline chat"
+
+configure-vscode:
+	.venv/bin/python scripts/setup_vscode_config.py
+	@echo "✓ VS Code configuration created"
+
+ingest:
+	cd mcp/qdrant_rag_server && ../../.venv/bin/python ingest_documents.py
+	@echo "✓ Documents indexed"
+
+test-query:
+	@echo "Testing semantic search..."
+	@echo '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"query","arguments":{"text":"docker configuration","top_k":3}}}' | .venv/bin/python mcp/qdrant_rag_server/server.py
 
 install-fastembed: venv
 	.venv/bin/pip install -r mcp/qdrant_rag_server/requirements.txt

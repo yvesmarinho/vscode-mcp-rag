@@ -2,12 +2,19 @@ import os
 import sys
 import json
 import uuid
-import time
+import logging
 from typing import List, Dict, Any, Optional, Iterable
 
 from qdrant_client import QdrantClient
 from qdrant_client.http import models as qm
 from dotenv import load_dotenv
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 
 # -------------------- Embeddings --------------------
@@ -358,24 +365,38 @@ def main():
     qdrant_key = os.getenv("QDRANT_API_KEY")
     collection = os.getenv("QDRANT_COLLECTION", "project_docs")
 
-    client = QdrantClient(url=qdrant_url, api_key=qdrant_key)
+    # Para localhost, não usar API key para evitar warning de conexão insegura
+    if "localhost" in qdrant_url or "127.0.0.1" in qdrant_url:
+        client = QdrantClient(url=qdrant_url)
+    else:
+        client = QdrantClient(url=qdrant_url, api_key=qdrant_key)
+    
+    logger.info(f"MCP Qdrant RAG Server starting on {qdrant_url}")
+    logger.info(f"Default collection: {collection}")
+    embeddings_provider = os.getenv('EMBEDDINGS_PROVIDER', 'fastembed')
+    logger.info(f"Embeddings provider: {embeddings_provider}")
+        
     emb: Optional[Embeddings] = None
     indexes: Dict[str, QdrantIndex] = {}
 
     def get_embeddings() -> Embeddings:
         nonlocal emb
         if emb is None:
+            logger.info("Initializing embeddings model...")
             emb = Embeddings()
+            logger.info("Embeddings model ready")
         return emb
 
     def get_index(coll: str) -> QdrantIndex:
         idx = indexes.get(coll)
         if idx is None:
+            logger.info(f"Creating index for collection: {coll}")
             idx = QdrantIndex(client, coll)
             indexes[coll] = idx
         return idx
 
     # MCP stdio loop (jsonrpc 2.0 minimal)
+    logger.info("MCP server ready - waiting for requests...")
     try:
         for line in sys.stdin:
             line = line.strip()
@@ -407,10 +428,14 @@ def main():
                         idx = get_index(coll)
                         res = handle_query(args, get_embeddings(), idx)
                     else:
+                        logger.error(f"Tool not found: {name}")
                         raise ValueError(f"Tool not found: {name}")
+                    
+                    logger.debug(f"Tool '{name}' executed successfully")
                     sys.stdout.write(json.dumps(mcp_response(id_, res)) + "\n")
                     sys.stdout.flush()
                 else:
+                    logger.warning(f"Method not supported: {method}")
                     sys.stdout.write(
                         json.dumps(
                             mcp_response(id_, error="Method not supported")
@@ -419,13 +444,23 @@ def main():
                     )
                     sys.stdout.flush()
             except Exception as e:
+                logger.error(f"Error processing request: {str(e)}")
                 sys.stdout.write(
                     json.dumps(mcp_response(id_, error=str(e))) + "\n"
                 )
                 sys.stdout.flush()
-    except (OSError, ValueError):
+    except (OSError, ValueError) as e:
         # stdin not available (running as daemon) - exit gracefully
+        logger.info(f"MCP server stopping: {str(e)}")
         pass
+    except KeyboardInterrupt:
+        logger.info("MCP server interrupted by user")
+        pass
+    except Exception as e:
+        logger.error(f"Unexpected error in MCP server: {str(e)}")
+        pass
+    
+    logger.info("MCP server shutdown complete")
 
 
 if __name__ == "__main__":
